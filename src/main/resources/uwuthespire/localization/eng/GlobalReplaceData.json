@@ -1,0 +1,14 @@
+[
+  {
+    "KEYS": [
+      "(S|s)nake"
+    ],
+    "VALUE": "snek"
+  },
+  {
+    "KEYS": [
+      "(D|d)amage"
+    ],
+    "VALUE": "ouchies"
+  }
+]

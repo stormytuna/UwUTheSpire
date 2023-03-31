@@ -13,12 +13,6 @@
   },
   {
     "KEYS": [
-      "(C|c)hannel"
-    ],
-    "VALUE": "chanew"
-  },
-  {
-    "KEYS": [
       "(C|c)urse"
     ],
     "VALUE": "cuwse"
@@ -187,21 +181,9 @@
   },
   {
     "KEYS": [
-      "(O|o)rbs\\."
-    ],
-    "VALUE": "fwiends :3"
-  },
-  {
-    "KEYS": [
       "(O|o)rbs"
     ],
     "VALUE": "fwiends"
-  },
-  {
-    "KEYS": [
-      "(O|o)rb\\."
-    ],
-    "VALUE": "fwiend :3"
   },
   {
     "KEYS": [

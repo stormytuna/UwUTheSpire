@@ -14,4 +14,20 @@ public class GeneralUtils {
         sb.append(arr[arr.length - 1]);
         return sb.toString();
     }
+
+    public static String lastChars(String str, int numChars) {
+        if (str.length() <= numChars) {
+            return str;
+        }
+
+        return str.substring(str.length() - numChars);
+    }
+
+    public static String allButLastChars(String str, int numChars) {
+        if (str.length() <= numChars) {
+            return "";
+        }
+
+        return str.substring(0, str.length() - numChars);
+    }
 }
