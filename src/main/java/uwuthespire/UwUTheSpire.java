@@ -50,7 +50,7 @@ public class UwUTheSpire implements
 
     public UwUTheSpire() {
         BaseMod.subscribe(this);
-        logger.info(modID + " subscribed to BaseMod.");
+        logger.info(modID + " subscwibed to BaseMod :D");
     }
 
     public static String makeID(String id) {
@@ -68,7 +68,7 @@ public class UwUTheSpire implements
     }
 
     public static void PostLoadLocalizationStrings(LocalizedStrings localizedStrings) {
-        logger.info("making evewything c-cute :3");
+        logger.info("makin evewything cyoot :3");
 
         if (Objects.requireNonNull(Settings.language) == ENG) {
             English_UwUifyStrings(localizedStrings);
@@ -80,32 +80,61 @@ public class UwUTheSpire implements
             Map<String, CardStrings> cardStringsMap = ReflectionHacks.getPrivateStatic(LocalizedStrings.class, "cards");
             if (cardStringsMap != null) {
                 for (CardStrings cardStrings : cardStringsMap.values()) {
-                    English_UwUifyStrings(cardStrings);
+                    English_UwUifyCardStrings(cardStrings);
                 }
                 ReflectionHacks.setPrivateStaticFinal(LocalizedStrings.class, "cards", cardStringsMap);
             }
         } catch (Exception e) {
             logger.error("fwickked up making evewything cute :(");
+            e.printStackTrace();
         }
     }
 
-    private static void English_UwUifyStrings(CardStrings cardStrings) {
-
-    }
-
-    // Stringy string meaning the actual 'String' class
-    private static String English_UwUifyStringyStrings(String string) {
-        String textInput = string.toLowerCase();
-        String[] words = string.split("\\s+");
-        for (int i = 0; i < words.length; i++) {
-            words[i] = English_UwUifyWord(words[i]);
+    private static void English_UwUifyCardStrings(CardStrings cardStrings) {
+        if (cardStrings.DESCRIPTION != null) {
+            cardStrings.DESCRIPTION = English_UwUifyString(cardStrings.DESCRIPTION, cardWords);
         }
-        textInput = String.join(" ", words);
-        return textInput;
+        if (cardStrings.UPGRADE_DESCRIPTION != null) {
+            cardStrings.UPGRADE_DESCRIPTION = English_UwUifyString(cardStrings.UPGRADE_DESCRIPTION, cardWords);
+        }
+        if (cardStrings.EXTENDED_DESCRIPTION != null) {
+            for (int i = 0; i < cardStrings.EXTENDED_DESCRIPTION.length; i++) {
+                cardStrings.EXTENDED_DESCRIPTION[i] = English_UwUifyString(cardStrings.EXTENDED_DESCRIPTION[i], cardWords);
+            }
+        }
     }
 
-    private static String English_UwUifyWord(String word) {
-        return word;
+    private static String English_UwUifyString(String string, ReplaceData[] replaceDataArray) {
+        String result = string;
+
+        // Keyword replacements
+        for (ReplaceData replaceData : replaceDataArray) {
+            for (String phrase : replaceData.KEYS) {
+                if (replaceData.VALUE == null) {
+                    replaceData.VALUE = "";
+                }
+
+                String replacement = result.replaceAll(phrase, replaceData.VALUE);
+
+                result = replacement;
+            }
+        }
+
+        // Make letters smol
+        result = result.toLowerCase();
+
+        // Make big letters that are supposed be big, big again
+        result = result.replaceAll("!d!", "!D!");
+        result = result.replaceAll("!b!", "!B!");
+        result = result.replaceAll("!m!", "!M!");
+        result = result.replaceAll(" nl ", " NL ");
+        result = result.replaceAll("\\[e]", "[E]");
+        result = result.replaceAll("\\[r]", "[R]");
+        result = result.replaceAll("\\[g]", "[G]");
+        result = result.replaceAll("\\[b]", "[B]");
+        result = result.replaceAll("\\[w]", "[W]");
+
+        return result;
     }
 
     public static String localizationPath(String lang, String file) {
@@ -133,6 +162,18 @@ public class UwUTheSpire implements
     }
 
     @Override
+    public void receiveEditStrings() {
+        try {
+            String cardWordsJson = Gdx.files.internal(localizationPath(getLangString(), "CardWords.json")).readString(String.valueOf(StandardCharsets.UTF_8));
+            cardWords = gson.fromJson(cardWordsJson, ReplaceData[].class);
+        } catch (Exception e) {
+            logger.error("fwickked up woading some impowtant stuffies (っ◞‸◟ c)");
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
     public void receivePostInitialize() {
         Texture badgeTexture = TextureLoader.getTexture(resourcePath("badge.png"));
         BaseMod.registerModBadge(badgeTexture, info.Name, GeneralUtils.arrToString(info.Authors), info.Description, null);
@@ -141,10 +182,8 @@ public class UwUTheSpire implements
     @Override
     public void receiveEditKeywords() {
         try {
-            String lang = getLangString();
-
-            String importantKeywordWords = Gdx.files.internal(localizationPath(getLangString(), "Keywords.json")).readString(String.valueOf(StandardCharsets.UTF_8));
-            KeywordInfo[] keywords = gson.fromJson(importantKeywordWords, KeywordInfo[].class);
+            String keywordsJson = Gdx.files.internal(localizationPath(getLangString(), "Keywords.json")).readString(String.valueOf(StandardCharsets.UTF_8));
+            KeywordInfo[] keywords = gson.fromJson(keywordsJson, KeywordInfo[].class);
 
             if (keywords != null) {
                 for (KeywordInfo keyword : keywords) {
@@ -153,6 +192,7 @@ public class UwUTheSpire implements
             }
         } catch (Exception e) {
             logger.error("fwickked up woading some impowtant stuffies (っ◞‸◟ c)");
+            e.printStackTrace();
         }
     }
 
