@@ -39,8 +39,9 @@ public class UwUTheSpire implements
     public static String modID;
     public static final Logger logger = LogManager.getLogger(modID);
     public static Settings.GameLanguage[] SupportedLanguages = {ENG};
-    private static ReplaceData[] replaceDataArray;
+    private static ReplaceData[] conditionalReplaceDataArray;
     private static ReplaceData[] globalReplaceDataArray;
+    private static ReplaceData[] replaceDataThenSkipArray;
 
     static {
         loadModInfo();
@@ -298,13 +299,28 @@ public class UwUTheSpire implements
         return false;
     }
 
-    private static String English_UwUifyString(String string, boolean careAboutReplaceData) {
+    private static String English_UwUifyString(String string, boolean useConditionalReplaceData) {
         String result = string;
 
         // Replace data replacements
+        for (ReplaceData replaceData : replaceDataThenSkipArray) {
+            for (String phrase : replaceData.KEYS) {
+                if (replaceData.VALUE == null) {
+                    replaceData.VALUE = "";
+                }
+
+                String original = result;
+                result = result.replaceAll(phrase, replaceData.VALUE);
+
+                if (!result.equals(original)) {
+                    return result;
+                }
+            }
+        }
+
         // These generally don't happen for names
-        if (careAboutReplaceData) {
-            for (ReplaceData replaceData : replaceDataArray) {
+        if (useConditionalReplaceData) {
+            for (ReplaceData replaceData : conditionalReplaceDataArray) {
                 for (String phrase : replaceData.KEYS) {
                     if (replaceData.VALUE == null) {
                         replaceData.VALUE = "";
@@ -349,7 +365,7 @@ public class UwUTheSpire implements
             String allButLastTwoChars = GeneralUtils.allButLastChars(word, 2);
             String allButLastThreeChars = GeneralUtils.allButLastChars(word, 3);
 
-            if (careAboutReplaceData && English_SkipWord(word, replaceDataArray)) {
+            if (useConditionalReplaceData && English_SkipWord(word, conditionalReplaceDataArray)) {
                 continue;
             }
 
@@ -405,11 +421,14 @@ public class UwUTheSpire implements
     @Override
     public void receiveEditStrings() {
         try {
-            String replaceDataJson = Gdx.files.internal(localizationPath(getLangString(), "ReplaceData.json")).readString(String.valueOf(StandardCharsets.UTF_8));
-            replaceDataArray = gson.fromJson(replaceDataJson, ReplaceData[].class);
+            String conditionalReplaceDataJson = Gdx.files.internal(localizationPath(getLangString(), "ConditionalReplaceData.json")).readString(String.valueOf(StandardCharsets.UTF_8));
+            conditionalReplaceDataArray = gson.fromJson(conditionalReplaceDataJson, ReplaceData[].class);
 
             String globalReplaceDataJson = Gdx.files.internal(localizationPath(getLangString(), "GlobalReplaceData.json")).readString(String.valueOf(StandardCharsets.UTF_8));
             globalReplaceDataArray = gson.fromJson(globalReplaceDataJson, ReplaceData[].class);
+
+            String replaceDataThenSkipJson = Gdx.files.internal(localizationPath(getLangString(), "ReplaceDataThenSkip.json")).readString(String.valueOf(StandardCharsets.UTF_8));
+            replaceDataThenSkipArray = gson.fromJson(replaceDataThenSkipJson, ReplaceData[].class);
         } catch (Exception e) {
             logger.error("fwickked up woading some impowtant stuffies (っ◞‸◟ c)");
             e.printStackTrace();

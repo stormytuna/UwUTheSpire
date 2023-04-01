@@ -1,0 +1,32 @@
+[
+  {
+    "KEYS": [
+      "^Feed$"
+    ],
+    "VALUE": "monch"
+  },
+  {
+    "KEYS": [
+      "^Bite$"
+    ],
+    "VALUE": "nom"
+  },
+  {
+    "KEYS": [
+      "^Body Slam$"
+    ],
+    "VALUE": "glomp"
+  },
+  {
+    "KEYS": [
+      "^War Cry$"
+    ],
+    "VALUE": "rawr x3"
+  },
+  {
+    "KEYS": [
+      "^Terror$"
+    ],
+    "VALUE": "scawy"
+  }
+]
